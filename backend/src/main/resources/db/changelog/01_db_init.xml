@@ -1,0 +1,46 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+         http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    
+    <changeSet id="REA-14-1" author="maratsadykov">
+        <comment>Создание схемы базы данных</comment>
+        <sql>
+            create schema if not exists rea;
+        </sql>
+    </changeSet>
+
+    <changeSet id="REA-14-2" author="maratsadykov">
+        <sql>
+            create extention if not exists "uuid-ossp";
+        </sql>
+    </changeSet>
+    
+    <changeSet id="REA-14-2" author="maratsadykov">
+        <preConditions onFail="MARK_RAN">
+            <not><tableExists tableName="product" schemaName="rea"/></not>
+        </preConditions>
+        <createTable tableName="product" schemaName="rea" remarks="Сведения о товарах, добавляемых пользователями.">
+            <column name="id" type="uuid" remarks="Идентификатор записи" defaultValue="uuid_generate_v4()">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="product_pk"/>
+            </column>
+            <column name="reg_num" type="varchar" remarks="Регистрационный номер">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="varchar" remarks="Наименование товара(заданное пользователем)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="additional_info" type="varchar" remarks="Дополнительная информация(описание) о товаре"/>
+            <column name="creation_date" type="timestamp" remarks="Дата создания товара" defaultValueComputed="now()">
+                <constraints nullable="false"/>
+            </column>
+            <column name="count" type="integer" remarks="Количество единиц товара" defaultValue="1">
+                <constraints nullable="false"/>
+            </column>
+            <column name="sold" type="boolean" remarks="Признак продано/не продано" defaultValue="false">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
